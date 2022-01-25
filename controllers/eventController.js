@@ -107,7 +107,7 @@ module.exports = {
           sort = ["eventDate", "ASC"];
       }
       //check query date
-      let dateQuery, start, end, soon;
+      let dateQuery, start, end
       switch (date) {
         case "today":
           start = moment().startOf("day").toDate();
@@ -208,7 +208,10 @@ module.exports = {
         return res.status(404).json({
           status: "Not Found",
           message: "No data found, table is empty",
-          result: {}
+          result: {
+            start,
+            end
+          }
         })
       }
       //response success
