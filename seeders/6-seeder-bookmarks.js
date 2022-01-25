@@ -4,23 +4,23 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert("Bookmarks",
       [{
-          eventId: 5,
+          eventId: 3,
           userId: 2,
+        },
+        {
+          eventId: 3,
+          userId: 1,
         },
         {
           eventId: 5,
           userId: 1,
         },
         {
-          eventId: 8,
-          userId: 1,
-        },
-        {
-          eventId: 8,
+          eventId: 5,
           userId: 2,
         },
         {
-          eventId: 10,
+          eventId: 8,
           userId: 2,
         },
       ])
