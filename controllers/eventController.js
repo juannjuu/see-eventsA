@@ -119,8 +119,8 @@ module.exports = {
           }
           break;
         case "tomorrow": //today + 1
-          start = moment().tz("UTC").startOf("day").add(1, "day").toDate();
-          end = moment().tz("UTC").endOf("day").add(1, "day").toDate();
+          start = moment().tz("UTC").add(2, "day").startOf("day").toDate();
+          end = moment().tz("UTC").add(2, "day").endOf("day").toDate();
           dateQuery = {
             eventDate: {
               [Op.between]: [start, end]
