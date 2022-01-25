@@ -5,13 +5,13 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// app.get("/", (req, res) => {
-//     res.status(200).json({
-//         status: 'OK',
-//         message: 'see-events-teama is running OK',
-//         time: new Date.now().toLocaleString()
-//     })
-// })
+app.get("/", (req, res) => {
+    res.status(200).json({
+        status: 'OK',
+        message: 'see-events-teama is running OK',
+        time: new Date().toLocaleString()
+    })
+})
 
 app.use('/api/v1', routes);
 
