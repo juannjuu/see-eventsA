@@ -110,8 +110,8 @@ module.exports = {
       let dateQuery, start, end
       switch (date) {
         case "today":
-          start = moment().tz("UTC").startOf("day").toDate();
-          end = moment().tz("UTC").endOf("day").toDate();
+          start = moment().tz("UTC").add(1, "day").startOf("day").toDate();
+          end = moment().tz("UTC").add(1, "day").endOf("day").toDate();
           dateQuery = {
             eventDate: {
               [Op.between]: [start, end]
