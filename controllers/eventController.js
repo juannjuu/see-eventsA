@@ -110,8 +110,8 @@ module.exports = {
       let dateQuery, start, end
       switch (date) {
         case "today":
-          start = moment().add(1, "day").startOf("day").toDate();
-          end = moment().add(1, "day").endOf("day").toDate();
+          start = moment().tz("UTC").startOf("day").toDate();
+          end = moment().tz("UTC").endOf("day").toDate();
           dateQuery = {
             eventDate: {
               [Op.between]: [start, end]
@@ -119,8 +119,8 @@ module.exports = {
           }
           break;
         case "tomorrow": //today + 1
-          start = moment().startOf("day").add(1, "day").toDate();
-          end = moment().endOf("day").add(1, "day").toDate();
+          start = moment().tz("UTC").startOf("day").add(1, "day").toDate();
+          end = moment().tz("UTC").endOf("day").add(1, "day").toDate();
           dateQuery = {
             eventDate: {
               [Op.between]: [start, end]
@@ -128,8 +128,8 @@ module.exports = {
           }
           break;
         case "week": //starts from monday
-          start = moment().startOf("week").add(1, "day").toDate();
-          end = moment().endOf("week").add(1, "day").toDate();
+          start = moment().tz("UTC").startOf("week").add(1, "day").toDate();
+          end = moment().tz("UTC").endOf("week").add(1, "day").toDate();
           dateQuery = {
             eventDate: {
               [Op.between]: [start, end]
@@ -137,8 +137,8 @@ module.exports = {
           }
           break;
         case "month": //starts from date 1 00:00 PM
-          start = moment().startOf("month").toDate();
-          end = moment().endOf("month").toDate();
+          start = moment().tz("UTC").startOf("month").toDate();
+          end = moment().tz("UTC").endOf("month").toDate();
           dateQuery = {
             eventDate: {
               [Op.between]: [start, end]
