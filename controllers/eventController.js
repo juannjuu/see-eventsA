@@ -169,14 +169,14 @@ module.exports = {
       if (keywords) {
         keywordsQuery = {
           title: {
-            [Op.like]: `%${keywords}%` //use where like % % clause to get title where contains the keywords
+            [Op.iLike]: `%${keywords}%` //use where like % % clause to get title where contains the keywords
           }
         }
       }
       //get events from database
       const events = await Event.findAll({
         limit: limitQuery,
-        offset: [(page - 1) * limitQuery],
+        offset: (page - 1) * limitQuery,
         order: [sort],
         include: [ //join table
           {
