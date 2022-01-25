@@ -110,8 +110,8 @@ module.exports = {
       let dateQuery, start, end
       switch (date) {
         case "today":
-          start = moment().startOf("day").toDate();
-          end = moment().endOf("day").toDate();
+          start = moment().add(1, "day").startOf("day").toDate();
+          end = moment().add(1, "day").endOf("day").toDate();
           dateQuery = {
             eventDate: {
               [Op.between]: [start, end]
@@ -119,8 +119,8 @@ module.exports = {
           }
           break;
         case "tomorrow": //today + 1
-          start = moment().add(1, "day").startOf("day").toDate();
-          end = moment().add(1, "day").endOf("day").toDate();
+          start = moment().startOf("day").add(1, "day").toDate();
+          end = moment().endOf("day").add(1, "day").toDate();
           dateQuery = {
             eventDate: {
               [Op.between]: [start, end]
@@ -226,7 +226,7 @@ module.exports = {
   },
   getEventDetail: async (req, res) => {
     const {
-      eventId: id
+      eventId
     } = req.params //get params
     try {
       // get spesific event details by eventId
@@ -245,7 +245,7 @@ module.exports = {
           },
         ],
         where: {
-          id
+          eventId: eventId
         },
         attributes: {
           exclude: ["createdAt", "updatedAt"]
@@ -255,7 +255,7 @@ module.exports = {
       if (!event) {
         return res.status(404).json({
           status: "Not Found",
-          message: "Cannot find an event with id " + id,
+          message: "Cannot find an event with id " + eventId,
           result: {}
         })
       }
