@@ -146,8 +146,8 @@ module.exports = {
           }
           break;
         case "year":
-          start = moment().startOf("year").toDate();
-          end = moment().endOf("year").toDate();
+          start = moment().tz("UTC").startOf("year").toDate();
+          end = moment().tz("UTC").endOf("year").toDate();
           dateQuery = {
             eventDate: {
               [Op.between]: [start, end]
