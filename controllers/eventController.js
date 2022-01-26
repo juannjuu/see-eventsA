@@ -215,7 +215,7 @@ module.exports = {
   },
   getEventDetail: async (req, res) => {
     const {
-      eventId
+      eventId: id
     } = req.params
     try {
       // get spesific event details
@@ -234,7 +234,7 @@ module.exports = {
           },
         ],
         where: {
-          eventId: eventId
+          eventId: id
         },
         attributes: {
           exclude: ["createdAt", "updatedAt"]
@@ -243,7 +243,7 @@ module.exports = {
       if (!event) {
         return res.status(404).json({
           status: "Not Found",
-          message: "Cannot find an event with id " + eventId,
+          message: "Cannot find an event with id " + id,
           result: {}
         })
       }
