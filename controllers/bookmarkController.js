@@ -1,18 +1,19 @@
-const Joi = require('joi')
+const Joi = require('joi') //use joi validation npm
 const errorHandler = require('../utils/error-handler') //error handler
 const {
     Bookmark,
     Event,
     User,
-} = require('../models') // use models
+} = require('../models')
 
 module.exports = {
     createBookmark: async (req, res) => {
         const {
             eventId
         } = req.params
-        const user = req.user;
+        const user = req.user; //req.user from middleware
         try {
+            //insert to database
             const bookmark = await Bookmark.create({
                 eventId,
                 userId: user.id
@@ -35,10 +36,11 @@ module.exports = {
         }
     },
     getBookmarks: async (req, res) => {
-        const user = req.user
+        const user = req.user //req.user from middleware
         try {
+            //get all from database
             const bookmarks = await Bookmark.findAll({
-                include: [{
+                include: [{ //join table
                     model: Event,
                     as: "event",
                     attributes: {
