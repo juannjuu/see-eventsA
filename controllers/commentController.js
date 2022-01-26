@@ -4,6 +4,7 @@ const {
     Comment,
     Event,
     User,
+    Profile,
 } = require('../models') // use models
 
 module.exports = {
@@ -71,18 +72,30 @@ module.exports = {
                 },
                 where: {
                     eventId,
-                }
+                },
+                raw: true,
+                nest: true
             })
-            if (commentData.length == 0) {
+            if (!commentData.length) {
                 return res.status(404).json({
                     status: "Not Found",
                     message: "No Comments Found"
                 })
             }
+
+            const userIds = commentData.map(el => el.userId)
+            const profiles = await Profile.findAll({ where : {userId: userIds}})
+            const images = profiles.map(el => el.image ? el.image : null)
+            
+            const results = commentData.map((el, i) => {
+                el.user.image = images[i]
+                return el
+            })
+            
             res.status(200).json({
                 status: "OK",
                 message: "Successfully retrieve the data",
-                results: commentData
+                results
             })
         } catch (error) {
             errorHandler(res, error);
