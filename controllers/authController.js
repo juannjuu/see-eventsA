@@ -107,9 +107,15 @@ module.exports = {
           email,
         },
       });
+      if (!user) {
+        return res.status(401).json({
+          message: "Incorrect Username or Password",
+          status: "Unauthorized",
+        });
+      }
       //check login validation
       const checkValid = comparePassword(password, user.password);
-      if (!user || !checkValid) {
+      if (!checkValid) {
         return res.status(401).json({
           message: "Incorrect Username or Password",
           status: "Unauthorized",
