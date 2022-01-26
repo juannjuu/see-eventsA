@@ -25,8 +25,6 @@ module.exports = {
       cb(null, true);
     };
 
-    // 1mb = 1024kb
-    // 1kb = 1024byte
     const upload = multer({
       storage,
       fileFilter,
@@ -40,13 +38,6 @@ module.exports = {
     return (req, res, next) => {
       upload(req, res, (err) => {
         if (err) {
-          // if ((err.code = "LIMIT_FILE_SIZE")) {
-          //   return res.status(400).json({
-          //     status: "Bad Request",
-          //     message: "Exceed maximum file size (5MB)",
-          //     result: {},
-          //   });
-          // }
           return res.status(400).json({
             status: "Bad Request",
             message: err.message,

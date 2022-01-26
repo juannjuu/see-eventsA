@@ -1,16 +1,16 @@
 const joi = require("joi"); //use joi validation npm
 const errorHandler = require("../utils/error-handler"); //error handler
 const {
-  User,
-  Profile
-} = require("../models"); //use models
-const {
   hashPassword,
   comparePassword
 } = require("../utils/bcrypt"); //use bcrypt from utils
 const {
   generateToken
 } = require("../utils/jwt"); //use jwt from utils
+const {
+  User,
+  Profile
+} = require("../models");
 
 module.exports = {
   register: async (req, res) => {
@@ -19,7 +19,7 @@ module.exports = {
       lastName,
       email,
       password
-    } = req.body; //get data from json body
+    } = req.body;
     try {
       //create Joi schema
       const schema = joi.object({
@@ -44,7 +44,7 @@ module.exports = {
           email,
         },
       });
-      //response email is already in the database
+      //response email is already exist in the database
       if (check) {
         return res.status(400).json({
           status: "Bad Request",
@@ -68,8 +68,7 @@ module.exports = {
         id: user.id,
         email: user.email,
       });
-      //response success
-      res.status(200).json({
+      res.status(201).json({
         status: "OK",
         message: "Register Success",
         result: {
@@ -96,14 +95,13 @@ module.exports = {
       const {
         error
       } = schema.validate(req.body);
-      //check error schema
       if (error) {
         return res.status(400).json({
           status: "Bad Request",
           message: error.message,
         });
       }
-      //get user from database by email
+      //get user by email from database 
       const user = await User.findOne({
         where: {
           email,
@@ -128,7 +126,6 @@ module.exports = {
         id: user.id,
         email: user.email,
       });
-      //response success
       res.status(200).json({
         status: "OK",
         message: "Login Success",

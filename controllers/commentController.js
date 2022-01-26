@@ -1,4 +1,4 @@
-const Joi = require('joi')
+const Joi = require('joi') //use joi validation npm
 const errorHandler = require('../utils/error-handler') //error handler
 const {
     Comment,
@@ -17,9 +17,11 @@ module.exports = {
         } = req.params
         const user = req.user;
         try {
+            //create schema Joi
             const schema = Joi.object({
                 comment: Joi.string().required()
             })
+            //check error schema
             const {
                 error
             } = schema.validate({
@@ -32,6 +34,7 @@ module.exports = {
                     result: {}
                 })
             }
+            //insert to database
             let commentData = await Comment.create({
                 comment,
                 eventId,
@@ -59,8 +62,9 @@ module.exports = {
             eventId
         } = req.params
         try {
+            //get all from database
             const commentData = await Comment.findAll({
-                include: {
+                include: { //join table
                     model: User,
                     as: "user",
                     attributes: {

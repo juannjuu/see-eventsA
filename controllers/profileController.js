@@ -1,29 +1,31 @@
-const Joi = require('joi')
+const Joi = require('joi') //use joi validation npm
 const errorHandler = require('../utils/error-handler') //handling error
+const {
+    hashPassword,
+    comparePassword
+} = require('../utils/bcrypt')
 const {
     Profile,
     User,
     Event,
     Category
-} = require('../models'); // use model
-const {
-    hashPassword,
-    comparePassword
-} = require('../utils/bcrypt')
+} = require('../models');
 
 module.exports = {
     editProfile: async (req, res) => {
-        const file = req.file;
         const {
             firstName,
             lastName
         } = req.body;
-        const profile = await Profile.findOne({
-            where: {
-                userId: req.user.id,
-            },
-        });
+        const file = req.file;
         try {
+            //get data where userId == req.user.id
+            const profile = await Profile.findOne({
+                where: {
+                    userId: req.user.id,
+                },
+            });
+            //check image exist
             const image = () => {
                 if (file == undefined) {
                     return profile.image;
@@ -31,6 +33,7 @@ module.exports = {
                     return file.path;
                 }
             };
+            //schema Joi
             const {
                 error
             } = Joi.object({
@@ -49,7 +52,7 @@ module.exports = {
                     result: {},
                 });
             }
-
+            //update data to database
             const update = await Profile.update({
                 image: image(),
             }, {
@@ -57,14 +60,13 @@ module.exports = {
                     userId: req.user.id,
                 },
             });
-
             if (update[0] != 1) {
                 return res.status(500).json({
                     status: "Internal Server Error",
                     message: "Update Profile Image Failed"
                 })
             }
-
+            //update data to database
             const user = await User.update({
                 firstName,
                 lastName,
@@ -73,7 +75,6 @@ module.exports = {
                     id: req.user.id,
                 },
             });
-
             if (user[0] != 1) {
                 return res.status(500).json({
                     status: "Internal Server Error",
@@ -89,7 +90,6 @@ module.exports = {
                     }
                 })
             }
-
             res.status(200).json({
                 status: "OK",
                 message: "Update Data Success",
@@ -101,8 +101,9 @@ module.exports = {
         }
     },
     getProfile: async (req, res) => {
-        const user = req.user
+        const user = req.user //req.user from middleware
         try {
+            //get data from database
             const profile = await Profile.findOne({
                 include: [{
                     model: User,
@@ -136,24 +137,24 @@ module.exports = {
             oldPassword,
             newPassword
         } = req.body;
-        const user = req.user
+        const user = req.user //req.user from middleware
         try {
+            //get data from database
             const users = await User.findOne({
                 where: {
                     id: user.id
                 },
             });
-
+            //compare old password and new password from body
             const checkValid = comparePassword(oldPassword, users.password);
-
             if (!checkValid) {
                 return res.status(400).json({
                     status: "Bad Request",
                     message: "Password is not valid",
                 });
             }
-
             const hash = hashPassword(newPassword);
+            //update to database
             const update = await User.update({
                 password: hash,
             }, {
@@ -161,12 +162,10 @@ module.exports = {
                     id: user.id
                 },
             });
-
             if (update[0] != 1) {
                 return res.status(500).json({
                     status: "Internal Server Error",
                     message: "Update Password Failed"
-
                 })
             }
             res.status(201).json({
@@ -179,8 +178,9 @@ module.exports = {
 
     },
     getMyEvents: async (req, res) => {
-        const user = req.user
+        const user = req.user //req.user from middleware
         try {
+            //get all from database
             const myEvents = await Event.findAll({
                 include: [ //join table
                     {
@@ -200,7 +200,6 @@ module.exports = {
                     userId: user.id
                 }
             })
-
             if (myEvents.length == 0) {
                 return res.status(404).json({
                     status: "Not Found",
@@ -208,7 +207,6 @@ module.exports = {
                     result: {}
                 })
             }
-
             res.status(200).json({
                 status: "OK",
                 message: "Get Data Success",

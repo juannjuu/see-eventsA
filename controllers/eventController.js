@@ -1,17 +1,14 @@
 const Joi = require('joi').extend(require("@joi/date")) //use joi validation npm
 const errorHandler = require('../utils/error-handler') //error handler
 const {
-  verifyToken
-} = require('../utils/jwt')
+  Op
+} = require("sequelize") //use Op from Sequelize
+const moment = require('moment') //use moment npm
 const {
   Event,
   Category,
   User,
-} = require('../models') // use models
-const {
-  Op
-} = require("sequelize") //use Op from Sequelize
-const moment = require('moment') //use moment npm
+} = require('../models')
 
 module.exports = {
   createEvent: async (req, res) => {
@@ -33,14 +30,13 @@ module.exports = {
         eventDate: Joi.date().format("YYYY-MM-DD HH:mm:ss").required(),
         image: Joi.string().required()
       });
-      //Check Joi
+      //Check error schema
       const {
         error
       } = schema.validate({
         ...body, //Spread Operator Except Image
         image: file.path, //Check file path extensions
       })
-      //Check Error Joi
       if (error) {
         return res.status(400).json({
           message: error.message,
@@ -54,7 +50,6 @@ module.exports = {
         userId: user.id,
         image: file.path
       });
-      //Check Error
       if (!events) {
         return res.status(500).json({
           message: "Create Event Failed",
@@ -62,7 +57,6 @@ module.exports = {
           result: {}
         })
       }
-      //Response Success
       res.status(201).json({
         message: "Create Event Success",
         status: "OK",
@@ -82,7 +76,6 @@ module.exports = {
       keywords
     } = req.query //get query params
     try {
-      //LOGIC QUERY PARAMS
       //check query limit
       let limitQuery;
       if (limit) {
@@ -90,7 +83,7 @@ module.exports = {
       } else {
         limitQuery = 8 //default limit 8
       }
-      //set paginations limit
+      //set paginations
       if (!page) {
         page = 1
       }
@@ -107,7 +100,7 @@ module.exports = {
           sort = ["eventDate", "ASC"];
       }
       //check query date
-      let dateQuery, start, end, soon;
+      let dateQuery, start, end
       switch (date) {
         case "today":
           start = moment().tz("UTC").startOf("day").toDate();
@@ -155,7 +148,6 @@ module.exports = {
           }
           break;
       }
-
       //check query category
       let categoryQuery;
       if (category) {
@@ -163,8 +155,7 @@ module.exports = {
           categoryName: category,
         };
       }
-
-      //check keywords
+      //check keywords query
       let keywordsQuery;
       if (keywords) {
         keywordsQuery = {
@@ -173,7 +164,7 @@ module.exports = {
           }
         }
       }
-      //get events from database
+      //get all from database
       const events = await Event.findAll({
         limit: limitQuery,
         offset: (page - 1) * limitQuery,
@@ -203,15 +194,16 @@ module.exports = {
           exclude: ["createdAt", "updatedAt"],
         }
       })
-      //if events data are empty
       if (events.length == 0) {
         return res.status(404).json({
           status: "Not Found",
           message: "No data found, table is empty",
-          result: {}
+          result: {
+            start,
+            end
+          }
         })
       }
-      //response success
       res.status(200).json({
         status: "OK",
         message: "Successfully retrieve the data",
@@ -223,12 +215,12 @@ module.exports = {
   },
   getEventDetail: async (req, res) => {
     const {
-      eventId: id
-    } = req.params //get params
+      eventId
+    } = req.params
     try {
-      // get spesific event details by eventId
+      // get spesific event details
       const event = await Event.findOne({
-        include: [{
+        include: [{ //join table
             model: Category,
             as: "category",
             attributes: {
@@ -242,34 +234,32 @@ module.exports = {
           },
         ],
         where: {
-          id
+          id: eventId
         },
         attributes: {
           exclude: ["createdAt", "updatedAt"]
         },
       })
-      //if event is not found
       if (!event) {
         return res.status(404).json({
           status: "Not Found",
-          message: "Cannot find an event with id " + id,
+          message: "Cannot find an event with id " + eventId,
           result: {}
         })
       }
-      //response success
       return res.status(200).json({
         status: "OK",
         message: "Successfully retrieve the data",
         result: event
       })
     } catch (error) {
-      console.log(error)
       errorHandler(res, error)
     }
   },
   updateEvent: async (req, res) => {
     const body = req.body
-    const user = req.user
+    const user = req.user //req.user from middleware
+    //check if req.file is exist
     if (req.file) {
       var file = req.file
     }
@@ -277,7 +267,7 @@ module.exports = {
       eventId
     } = req.params
     try {
-      //Create schema Joi
+      //create schema Joi
       const schema = Joi.object({
         categoryId: Joi.number(),
         title: Joi.string(),
@@ -285,13 +275,12 @@ module.exports = {
         eventDate: Joi.date().format("YYYY-MM-DD HH:mm:ss"),
         image: Joi.string()
       });
-      //Check Joi
+      //check schema Joi
       const {
         error
       } = schema.validate({
         ...body,
       })
-      //Check Error Joi
       if (error) {
         return res.status(400).json({
           status: "Bad Request",
@@ -299,7 +288,7 @@ module.exports = {
           result: {}
         })
       }
-      //Update to Database
+      //update to Database
       if (!req.file) {
         var events = await Event.update({
           ...body,
@@ -320,7 +309,6 @@ module.exports = {
           }
         });
       }
-      //Check Error
       if (events[0] != 1) {
         return res.status(401).json({
           status: "Unauthorized",
@@ -333,8 +321,7 @@ module.exports = {
           id: eventId,
         }
       })
-      //Response Success
-      res.status(200).json({
+      res.status(201).json({
         status: "OK",
         message: "Update Event Success",
         result: event
