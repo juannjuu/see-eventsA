@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
     register,
-    login
+    login,facebookCallback
 } = require("../controllers/authController");
 const passport = require("passport")
 require('../utils/passport');
@@ -31,5 +31,10 @@ function (req, res) {
     res.status(200).json({ access_token });
 }
 );
+
+router.get("/facebook", passport.authenticate("facebook",{scope: ['email'] } ))
+router.get("/facebook/callback",passport.authenticate('facebook', { failureRedirect: 'https://www.rakyat.xyz/login' }), facebookCallback)
+
+
 
 module.exports = router;

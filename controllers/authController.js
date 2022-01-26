@@ -137,4 +137,29 @@ module.exports = {
       errorHandler(res, error);
     }
   },
+  facebookCallback : async (req,res) => {
+    const profile = req.user._json
+    let user
+    try {
+      console.log(req.user._json)
+      user = await User.findOne({where :{email:profile.email}});
+      console.log(user)
+      if (!user){
+        user = await User.create({
+          email : profile.email,
+          firstName:profile.given_name ,
+          lastName : "",
+           password :""})
+      }
+
+      const token = generateToken({
+        id: profile.id,
+        email: profile.email,
+      });
+      res.redirect("https://www.rakyat.xyz/login?token=" + token) //redirect tinggal di ubah mau ke api yg mana? disini ke halaman events
+    } catch (error) {
+      
+      errorHandler (res,error)
+    }
+  },
 };
