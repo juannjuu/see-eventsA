@@ -11,7 +11,7 @@ passport.use(
       clientID:
         '813013001535-go98i51vjavi72lrbr0oih3ciqmmrep0.apps.googleusercontent.com',
       clientSecret: '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',
-      callbackURL: 'https://www.rakyat.xyz/api/v1/auth/google/callback',
+      callbackURL: 'https://see-events-teama.herokuapp.com/api/v1/auth/google/callback',
     },
     async function (accessToken, refreshToken, profile, cb) {
       // Find email or create it
