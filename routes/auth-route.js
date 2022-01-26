@@ -32,7 +32,9 @@ function (req, res) {
 }
 );
 
-router.get("/facebook", passport.authenticate("facebook",{scope: ['email'] } ))
+router.get("/facebook",async (req,res)=>{
+    res.status(200).json({ msg : "error"})
+},passport.authenticate("facebook",{scope: ['email'] } ))
 router.get("/facebook/callback",passport.authenticate('facebook', { failureRedirect: 'https://www.rakyat.xyz/login' }), facebookCallback)
 
 
