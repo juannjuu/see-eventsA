@@ -33,6 +33,8 @@
     "multer-cloudinary": "^1.1.0",
     "multer-storage-cloudinary": "^4.0.0",
     "mysql2": "^2.3.3",
+    "passport": "^0.5.2",
+    "passport-google-oauth20": "^2.0.0",
     "path": "^0.12.7",
     "pg": "^8.7.1",
     "sequelize": "^6.13.0",
