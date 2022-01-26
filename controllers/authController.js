@@ -31,9 +31,7 @@ module.exports = {
       //check error schema
       const {
         error
-      } = schema.validate({
-        ...body
-      });
+      } = schema.validate(req.body);
       if (error) {
         return res.status(400).json({
           status: "Bad Request",
@@ -81,6 +79,7 @@ module.exports = {
       errorHandler(res, error);
     }
   },
+
   login: async (req, res) => {
     const {
       email,
