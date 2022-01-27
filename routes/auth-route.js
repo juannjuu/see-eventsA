@@ -36,17 +36,22 @@ router.get('/google/callback', passport.authenticate('google', {
     }
 );
 
-router.get("/facebook", async (req, res) => {
-    res.status(200).json({
-        msg: "error"
-    })
-}, passport.authenticate("facebook", {
+router.get("/facebook", passport.authenticate("facebook", {
     scope: ['email']
 }))
+
 router.get("/facebook/callback", passport.authenticate('facebook', {
     failureRedirect: 'https://www.rakyat.xyz/login'
-}), facebookCallback)
+}), function (req, res) {
+    let payload = {
+        id: req.user.id,
+        email: req.user.email,
+    };
 
-
+    const access_token = generateToken(payload);
+    res.status(200).json({
+        access_token
+    });
+})
 
 module.exports = router;
