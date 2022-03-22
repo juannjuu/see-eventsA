@@ -1,4 +1,4 @@
-## SeeEvents Glints Mini Project Batch 16 REST-API
+# SeeEvents Glints Mini Project Batch 16 REST-API
 See event  is an application  where the user can manage the event that they see, share, and held. It has basic functioning like Login, Register, Create Event, Search Event, Event Category, Bookmark, and many more.
 
 ## API Documentation :
